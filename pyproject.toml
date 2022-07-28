@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "eaas-e2e-ma-mock"
+version = "1.0.0"
+description = "CloudBlue Connect Multi Account Extension for E2Es"
+authors = ["CloudBlue LLC"]
+license = "Apache-2.0"
+packages = [
+    { include = "e2e" },
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4"
+fastapi = "^0.78.0"
+connect-eaas-core = ">=3.1.0,<4"
+
+[tool.poetry.plugins."connect.eaas.ext"]
+"extension" = "e2e.events:E2EEventsExtension"
+"webapp" = "e2e.webapp:E2EWebAppExtension"
