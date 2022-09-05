@@ -29,3 +29,7 @@ class E2EWebAppExtension(WebAppExtension):
             {'settings': settings},
         )
         return installation_client('devops').installations[installation['id']].get()
+
+    @router.get('/whoami')
+    def whoami(self, installation_client: ConnectClient = Depends(get_installation_client)):
+        return installation_client.auth.action('context').get()
