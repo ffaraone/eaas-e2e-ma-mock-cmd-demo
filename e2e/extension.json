@@ -9,10 +9,6 @@
            "label": "My Settings",
            "url": "/static/settings.html"
       },
-      "customer": {
-           "label": "My Customer Portal UI",
-           "url": "/static/customer.html"
-      },
       "modules": {
            "label": "My Main Page",
            "url": "/static/index.html",
