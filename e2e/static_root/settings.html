@@ -10,7 +10,7 @@
     </body>
     <script>
         function fillDiv() {
-            fetch('/whoami')
+            fetch('/api/whoami')
             .then(response => response.json())
             .then(
                 (data) => {
