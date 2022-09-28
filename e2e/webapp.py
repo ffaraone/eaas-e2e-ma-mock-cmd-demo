@@ -2,12 +2,41 @@ from connect.client import ConnectClient
 from fastapi import Depends, Request
 
 
-from connect.eaas.core.decorators import router, web_app
+from connect.eaas.core.decorators import (
+    account_settings_page,
+    admin_pages,
+    module_pages,
+    router,
+    web_app,
+)
 from connect.eaas.core.extension import WebAppExtension
 from connect.eaas.core.inject.synchronous import get_installation, get_installation_client
 
 
 @web_app(router)
+@account_settings_page('My Settings', '/static/settings.html')
+@module_pages(
+    'My Main Page',
+    '/static/index.html',
+    children=[
+        {
+            'label': 'Page 1',
+            'url': '/static/page1.html'
+        },
+        {
+            'label': 'Page 2',
+            'url': '/static/page2.html'
+        },
+    ],
+)
+@admin_pages(
+    [
+        {
+            'label': 'Admin Page',
+            'url': '/static/admin.html'
+        },
+    ]
+)
 class E2EWebAppExtension(WebAppExtension):
     @router.get('/settings')
     def retrieve_settings(
