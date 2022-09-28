@@ -3,25 +3,5 @@
     "description": "This extension is for e2e tests of EaaS.",
     "version": "1.0.0",
     "readme_url": "https://github.com/cloudblue/eaas-e2e-ma-mock/blob/master/README.md",
-    "changelog_url": "https://github.com/cloudblue/eaas-e2e-ma-mock/blob/master/CHANGELOG.md",
-    "ui": {
-      "settings": {
-           "label": "My Settings",
-           "url": "/static/settings.html"
-      },
-      "modules": {
-           "label": "My Main Page",
-           "url": "/static/index.html",
-           "children": [
-              {
-                   "label": "Page 1",
-                    "url": "/static/page1.html"
-              },
-              {
-                  "label": "Page 2",
-                  "url": "/static/page2.html"
-              }
-          ]
-      }
-    }
-  }
+    "changelog_url": "https://github.com/cloudblue/eaas-e2e-ma-mock/blob/master/CHANGELOG.md"
+}
