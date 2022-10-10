@@ -3,11 +3,11 @@ import string
 
 
 from connect.eaas.core.decorators import event
-from connect.eaas.core.extension import EventsExtension
+from connect.eaas.core.extension import EventsApplicationBase
 from connect.eaas.core.responses import BackgroundResponse
 
 
-class E2EEventsExtension(EventsExtension):
+class E2EEventsApplication(EventsApplicationBase):
 
     @event('installation_status_change', statuses=['installed', 'uninstalled'])
     def on_installation_status_change(self, request):

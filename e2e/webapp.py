@@ -9,7 +9,7 @@ from connect.eaas.core.decorators import (
     router,
     web_app,
 )
-from connect.eaas.core.extension import WebAppExtension
+from connect.eaas.core.extension import WebApplicationBase
 from connect.eaas.core.inject.synchronous import get_installation, get_installation_client
 
 
@@ -37,7 +37,7 @@ from connect.eaas.core.inject.synchronous import get_installation, get_installat
         },
     ]
 )
-class E2EWebAppExtension(WebAppExtension):
+class E2EWebApplication(WebApplicationBase):
     @router.get('/settings')
     def retrieve_settings(
         self,
