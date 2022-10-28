@@ -1,5 +1,3 @@
-# Release 1.0.0
+# EaaS: CloudBlue Connect Multiaccount Extension Mock for E2Es changelog
 
-This release implements an Events Extension to autoapprove Fulfillment requests for vendors.
-Also, it implements a Web Application to retrieve and store settings for an installation.
-
+* 1.0.0: initial version
