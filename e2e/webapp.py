@@ -1,64 +1,101 @@
-from connect.client import ConnectClient
-from fastapi import Depends, Request
+# -*- coding: utf-8 -*-
+#
+# Copyright (c) 2022, CloudBlue LLC
+# All rights reserved.
+#
+from typing import List
 
-
+from connect.client import ConnectClient, R
 from connect.eaas.core.decorators import (
     account_settings_page,
-    admin_pages,
     module_pages,
     router,
     web_app,
 )
 from connect.eaas.core.extension import WebApplicationBase
+from connect.eaas.core.inject.common import get_call_context
+from connect.eaas.core.inject.models import Context
 from connect.eaas.core.inject.synchronous import get_installation, get_installation_client
+from fastapi import Depends
+
+from e2e.schemas import Marketplace, Settings
 
 
 @web_app(router)
-@account_settings_page('My Settings', '/static/settings.html')
-@module_pages(
-    'My Main Page',
-    '/static/index.html',
-    children=[
-        {
-            'label': 'Page 1',
-            'url': '/static/page1.html'
-        },
-        {
-            'label': 'Page 2',
-            'url': '/static/page2.html'
-        },
-    ],
-)
-@admin_pages(
-    [
-        {
-            'label': 'Admin Page',
-            'url': '/static/admin.html'
-        },
-    ]
-)
+@account_settings_page('Chart settings', '/static/settings.html')
+@module_pages('Chart', '/static/index.html')
 class E2EWebApplication(WebApplicationBase):
-    @router.get('/settings')
+
+    @router.get(
+        '/settings',
+        summary='Retrive charts settings',
+        response_model=Settings,
+    )
     def retrieve_settings(
         self,
         installation: dict = Depends(get_installation),
     ):
-        return installation
+        return Settings(marketplaces=installation['settings'].get('marketplaces', []))
 
-    @router.post('/settings')
-    def update_settings(
+    @router.post(
+        '/settings',
+        summary='Save charts settings',
+        response_model=Settings,
+    )
+    def save_settings(
         self,
-        request: Request,
-        installation: dict = Depends(get_installation),
-        installation_client: ConnectClient = Depends(get_installation_client),
+        settings: Settings,
+        context: Context = Depends(get_call_context),
+        client: ConnectClient = Depends(get_installation_client),
     ):
-        settings = request.json()
-
-        installation_client('devops').installations[installation['id']].update(
-            {'settings': settings},
+        client('devops').installations[context.installation_id].update(
+            payload={
+                'settings': settings.dict(),
+            },
         )
-        return installation_client('devops').installations[installation['id']].get()
+        return settings
 
-    @router.get('/whoami')
-    def whoami(self, installation_client: ConnectClient = Depends(get_installation_client)):
-        return installation_client.auth.action('context').get()
+    @router.get(
+        '/marketplaces',
+        summary='List all available marketplaces',
+        response_model=List[Marketplace],
+    )
+    def list_marketplaces(
+        self,
+        client: ConnectClient = Depends(get_installation_client),
+    ):
+        return [
+            Marketplace(**marketplace)
+            for marketplace in client.marketplaces.all().values_list(
+                'id', 'name', 'description', 'icon',
+            )
+        ]
+
+    @router.get(
+        '/chart',
+        summary='Generate chart data',
+    )
+    def generate_chart_data(
+        self,
+        installation: dict = Depends(get_installation),
+        client: ConnectClient = Depends(get_installation_client),
+    ):
+        data = {}
+        for mp in installation['settings'].get('marketplaces', []):
+            active_assets = client('subscriptions').assets.filter(
+                R().marketplace.id.eq(mp['id']) & R().status.eq('active'),
+            ).count()
+            data[mp['id']] = active_assets
+
+        return {
+            'type': 'bar',
+            'data': {
+                'labels': list(data.keys()),
+                'datasets': [
+                    {
+                        'label': 'Subscriptions',
+                        'data': list(data.values()),
+                    },
+                ],
+            },
+        }
