@@ -11,10 +11,7 @@ class Marketplace(BaseModel):
 
     @validator('icon')
     def set_icon(cls, icon):
-        return icon or (
-            'https://unpkg.com/@cloudblueconnect'
-            '/material-svg@latest/icons/google/language/baseline.svg'
-        )
+        return icon or '/static/images/mkp.svg'
 
 
 class Settings(BaseModel):
