@@ -68,7 +68,11 @@ def test_save_settings(test_client_factory, client_mocker_factory):
 
     client = test_client_factory(E2EWebApplication)
 
-    response = client.post('/api/settings', json=settings.dict())
+    response = client.post(
+        '/api/settings',
+        json=settings.dict(),
+        context={'installation_id': 'EIN-000'},
+    )
     assert response.status_code == 200
 
     data = response.json()
