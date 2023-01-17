@@ -13,4 +13,4 @@ import '../../styles/index.css';
 
 
 createApp({ 'main-card': Card })
-  .then(() => { chartPage('bar'); });
+  .then(() => { chartPage('line'); });

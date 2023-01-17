@@ -4,17 +4,29 @@ Copyright (c) 2022, CloudBlue LLC
 All rights reserved.
 */
 // API calls to the backend
-export const getSettings = () => fetch('/api/settings').then((response) => response.json());
+export const getSettings = (installationId) => {
+  const url = installationId !== undefined ? `/api/admin/${installationId}/settings` : '/api/settings';
 
-export const getChart = () => fetch('/api/chart').then((response) => response.json());
+  return fetch(url).then((response) => response.json());
+};
 
-export const getMarketplaces = () => fetch('/api/marketplaces').then((response) => response.json());
+export const getChart = (type) => fetch(`/api/chart?type=${type}`).then((response) => response.json());
 
-export const updateSettings = (settings) => fetch('/api/settings', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(settings),
-}).then((response) => response.json());
+export const getMarketplaces = (installationId) => {
+  const url = installationId !== undefined ? `/api/admin/${installationId}/marketplaces` : '/api/marketplaces';
+
+  return fetch(url).then((response) => response.json());
+};
+
+export const updateSettings = (settings, installationId) => {
+  const url = installationId !== undefined ? `/api/admin/${installationId}/settings` : '/api/settings';
+
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(settings),
+  }).then((response) => response.json());
+};
 
 // data processing
 export const processMarketplaces = (

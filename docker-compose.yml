@@ -33,5 +33,3 @@ services:
     command: extension-test
     volumes:
       - .:/extension
-    env_file:
-      - .eaas_e2e_ma_mock_dev.env
