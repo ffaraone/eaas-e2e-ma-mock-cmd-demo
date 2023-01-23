@@ -28,12 +28,13 @@ const populateHtmlPlugins = (pagesArray) => {
   return res;
 }
 
-const pages = populateHtmlPlugins(["Index", "Settings"]);
+const pages = populateHtmlPlugins(["Index", "Line", "Settings"]);
 
 module.exports = {
   mode: 'production',
   entry: {
     index: __dirname + "/ui/src/pages/index.js",
+    line: __dirname + "/ui/src/pages/line.js",
     settings: __dirname + "/ui/src/pages/settings.js"
   },
   output: {

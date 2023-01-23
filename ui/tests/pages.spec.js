@@ -3,7 +3,7 @@ Copyright (c) 2022, CloudBlue LLC
 All rights reserved.
 */
 import {
-  index,
+  chartPage,
   saveSettingsData,
   settings,
 } from '@/pages';
@@ -55,6 +55,7 @@ jest.mock('@/components', () => ({
 
 const app = {
   emit: jest.fn(),
+  watch: async (a, handler, b) => { await handler({})},
 };
 
 describe('pages.js', () => {
@@ -76,7 +77,7 @@ describe('pages.js', () => {
     </div>`;
     });
     beforeEach(async () => {
-      await index(app);
+      await chartPage('type');
     });
 
     test('calls hide app', () => {
@@ -89,7 +90,7 @@ describe('pages.js', () => {
       expect(getSettings).toHaveBeenCalled();
     });
     test('calls getChart', () => {
-      expect(getChart).toHaveBeenCalled();
+      expect(getChart).toHaveBeenCalledWith('type');
     });
     test('calls prepareChart', () => {
       expect(prepareChart).toHaveBeenCalled();

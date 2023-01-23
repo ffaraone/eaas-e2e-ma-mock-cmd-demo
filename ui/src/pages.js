@@ -26,14 +26,14 @@ import {
 } from './components';
 
 
-export const saveSettingsData = async (app) => {
+export const saveSettingsData = async (app, installationId) => {
   if (!app) return;
   disableButton('save', 'Saving...');
   try {
-    const allMarketplaces = await getMarketplaces();
+    const allMarketplaces = await getMarketplaces(installationId);
     const checkboxes = processCheckboxes(document.getElementsByTagName('input'));
     const marketplaces = processSelectedMarketplaces(allMarketplaces, checkboxes);
-    await updateSettings({ marketplaces });
+    await updateSettings({ marketplaces }, installationId);
     app.emit('snackbar:message', 'Settings saved');
   } catch (error) {
     app.emit('snackbar:error', error);
@@ -41,11 +41,11 @@ export const saveSettingsData = async (app) => {
   enableButton('save', 'Save');
 };
 
-export const index = async () => {
+export const chartPage = async (type) => {
   hideComponent('app');
   showComponent('loader');
   const settings = await getSettings();
-  const chartData = await getChart();
+  const chartData = await getChart(type);
   const chart = prepareChart(chartData);
   const marketplaces = prepareMarketplaces(settings.marketplaces);
   hideComponent('loader');
@@ -57,17 +57,23 @@ export const index = async () => {
 export const settings = async (app) => {
   if (!app) return;
   try {
-    hideComponent('app');
-    hideComponent('error');
-    showComponent('loader');
-    const allMarketplaces = await getMarketplaces();
-    const { marketplaces: selectedMarketpaces } = await getSettings();
-    const preparedMarketplaces = processMarketplaces(allMarketplaces, selectedMarketpaces);
-    const marketplaces = prepareMarketplacesWithSwitch(preparedMarketplaces);
-    renderMarketplaces(marketplaces);
-    enableButton('save', 'Save');
-    addEventListener('save', 'click', saveSettingsData.bind(null, app));
-    showComponent('app');
+    await app.watch(
+      '*',
+      async (ctx) => {
+        hideComponent('app');
+        hideComponent('error');
+        showComponent('loader');
+        const allMarketplaces = await getMarketplaces(ctx.objectId);
+        const { marketplaces: selectedMarketpaces } = await getSettings(ctx.objectId);
+        const preparedMarketplaces = processMarketplaces(allMarketplaces, selectedMarketpaces);
+        const marketplaces = prepareMarketplacesWithSwitch(preparedMarketplaces);
+        renderMarketplaces(marketplaces);
+        enableButton('save', 'Save');
+        addEventListener('save', 'click', saveSettingsData.bind(null, app, ctx.objectId));
+        showComponent('app');
+      },
+      { immediate: true },
+    );
   } catch (error) {
     app.emit('snackbar:error', error);
     showComponent('error');

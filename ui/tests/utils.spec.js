@@ -41,13 +41,13 @@ describe('utils.js API calls', () => {
       fetch.mockImplementationOnce(() => Promise.resolve({
         json: () => Promise.resolve({ someKey: 'someValue' }),
       }));
-      const result = await getChart();
+      const result = await getChart('hello');
       expect(result).toEqual({ someKey: 'someValue' });
     });
 
     test('returns error', async () => {
       fetch.mockImplementationOnce(() => Promise.reject(new Error('error')));
-      try { await getChart(); } catch (e) {
+      try { await getChart('hello'); } catch (e) {
         expect(e.message).toBe('error');
       }
     });
