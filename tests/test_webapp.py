@@ -3,8 +3,6 @@
 # Copyright (c) 2022, CloudBlue LLC
 # All rights reserved.
 #
-import os
-
 from connect.client import R
 
 from e2e.schemas import Marketplace, Settings
@@ -68,14 +66,10 @@ def test_retrieve_settings_admin(mocker, test_client_factory, client_mocker_fact
             'marketplaces': marketplaces,
         },
     }
-    mocker.patch.dict(os.environ, {'API_KEY': 'ApiKey SU-000:XXXX'})
 
     client_mocker = client_mocker_factory()
     client_mocker('devops').installations['EIN-000'].get(
         return_value=installation,
-    )
-    client_mocker('devops').services['SRVC-0000'].installations['EIN-000']('impersonate').post(
-        return_value={'installation_api_key': 'api-key'},
     )
     client = test_client_factory(E2EWebApplication)
 
@@ -116,7 +110,6 @@ def test_save_settings(test_client_factory, client_mocker_factory):
 
 
 def test_save_settings_admin(mocker, test_client_factory, client_mocker_factory):
-    mocker.patch.dict(os.environ, {'API_KEY': 'ApiKey SU-000:XXXX'})
     settings = Settings(
         marketplaces=[
             Marketplace(
@@ -129,9 +122,6 @@ def test_save_settings_admin(mocker, test_client_factory, client_mocker_factory)
     )
 
     client_mocker = client_mocker_factory()
-    client_mocker('devops').services['SRVC-0000'].installations['EIN-000']('impersonate').post(
-        return_value={'installation_api_key': 'api-key'},
-    )
 
     client_mocker('devops').installations['EIN-000'].update(
         return_value={},
@@ -196,12 +186,8 @@ def test_list_marketplaces_admin(mocker, test_client_factory, client_mocker_fact
             'icon': 'mp_001.png',
         },
     ]
-    mocker.patch.dict(os.environ, {'API_KEY': 'ApiKey SU-000:XXXX'})
 
     client_mocker = client_mocker_factory()
-    client_mocker('devops').services['SRVC-0000'].installations['EIN-000']('impersonate').post(
-        return_value={'installation_api_key': 'api-key'},
-    )
     client_mocker.marketplaces.all().mock(return_value=marketplaces)
 
     client = test_client_factory(E2EWebApplication)
