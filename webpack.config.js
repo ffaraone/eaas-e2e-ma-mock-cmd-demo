@@ -28,14 +28,16 @@ const populateHtmlPlugins = (pagesArray) => {
   return res;
 }
 
-const pages = populateHtmlPlugins(["Index", "Line", "Settings"]);
+const pages = populateHtmlPlugins(["Index", "Line", "Settings", "Tab1", "Tab2"]);
 
 module.exports = {
   mode: 'production',
   entry: {
     index: __dirname + "/ui/src/pages/index.js",
     line: __dirname + "/ui/src/pages/line.js",
-    settings: __dirname + "/ui/src/pages/settings.js"
+    settings: __dirname + "/ui/src/pages/settings.js",
+    tab1: __dirname + "/ui/src/pages/tab1.js",
+    tab2: __dirname + "/ui/src/pages/tab2.js"
   },
   output: {
     filename: '[name].[contenthash].js',

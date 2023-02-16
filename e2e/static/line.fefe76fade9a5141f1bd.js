@@ -2,12 +2,12 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 256:
+/***/ 385:
 /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
 
-// EXTERNAL MODULE: ../install_temp/node_modules/@cloudblueconnect/connect-ui-toolkit/dist/index.js
-var dist = __webpack_require__(243);
+// EXTERNAL MODULE: ./node_modules/@cloudblueconnect/connect-ui-toolkit/dist/index.js
+var dist = __webpack_require__(164);
 ;// CONCATENATED MODULE: ./ui/src/utils.js
 
 /*
@@ -21,15 +21,15 @@ const utils_getSettings = (installationId) => {
   return fetch(url).then((response) => response.json());
 };
 
-const utils_getChart = (type) => fetch(`/api/chart?type=${type}`).then((response) => response.json());
+const getChart = (type) => fetch(`/api/chart?type=${type}`).then((response) => response.json());
 
-const getMarketplaces = (installationId) => {
+const utils_getMarketplaces = (installationId) => {
   const url = installationId !== undefined ? `/api/admin/${installationId}/marketplaces` : '/api/marketplaces';
 
   return fetch(url).then((response) => response.json());
 };
 
-const updateSettings = (settings, installationId) => {
+const utils_updateSettings = (settings, installationId) => {
   const url = installationId !== undefined ? `/api/admin/${installationId}/settings` : '/api/settings';
 
   return fetch(url, {
@@ -40,7 +40,7 @@ const updateSettings = (settings, installationId) => {
 };
 
 // data processing
-const processMarketplaces = (
+const utils_processMarketplaces = (
   allMarketplaces,
   selectedMarketplaces,
 ) => allMarketplaces.map((marketplace) => {
@@ -51,14 +51,14 @@ const processMarketplaces = (
   return { ...marketplace, checked };
 });
 
-const processSelectedMarketplaces = (
+const utils_processSelectedMarketplaces = (
   allMarketplaces,
   checkboxes,
 ) => checkboxes.map((checkbox) => allMarketplaces.find(
   (marketplace) => marketplace.id === checkbox.value,
 ));
 
-const processCheckboxes = (
+const utils_processCheckboxes = (
   checkboxes,
 ) => Array.from(checkboxes).filter(checkbox => checkbox.checked);
 
@@ -68,7 +68,7 @@ Copyright (c) 2022, CloudBlue LLC
 All rights reserved.
 */
 // prepare UI components
-const components_prepareMarketplaces = (marketplaces) => {
+const prepareMarketplaces = (marketplaces) => {
   try {
     return marketplaces.reduce((list, marketplace) => `${list}<li class="list-item">
         <div class="list-item-image">
@@ -82,7 +82,7 @@ const components_prepareMarketplaces = (marketplaces) => {
   } catch (e) { return ''; }
 };
 
-const prepareMarketplacesWithSwitch = (marketplaces) => {
+const components_prepareMarketplacesWithSwitch = (marketplaces) => {
   try {
     return marketplaces.reduce((list, marketplace) => `${list}<li class="list-item">
         <div class="list-item-image">
@@ -102,7 +102,7 @@ const prepareMarketplacesWithSwitch = (marketplaces) => {
   } catch (e) { return ''; }
 };
 
-const components_prepareChart = (chartData) => `<img src="https://quickchart.io/chart?c=${encodeURI(JSON.stringify(chartData))}">`;
+const prepareChart = (chartData) => `<img src="https://quickchart.io/chart?c=${encodeURI(JSON.stringify(chartData))}">`;
 
 // render UI components
 const components_renderMarketplaces = (marketplaces) => {
@@ -110,25 +110,25 @@ const components_renderMarketplaces = (marketplaces) => {
   element.innerHTML = marketplaces;
 };
 
-const components_renderChart = (chart) => {
+const renderChart = (chart) => {
   const element = document.getElementById('chart');
   element.innerHTML = chart;
 };
 
 // render UI components - buttons
-const enableButton = (id, text) => {
+const components_enableButton = (id, text) => {
   const element = document.getElementById(id);
   element.disabled = false;
   if (text) element.innerText = text;
 };
 
-const disableButton = (id, text) => {
+const components_disableButton = (id, text) => {
   const element = document.getElementById(id);
   element.disabled = true;
   if (text) element.innerText = text;
 };
 
-const addEventListener = (id, event, callback) => {
+const components_addEventListener = (id, event, callback) => {
   const element = document.getElementById(id);
   element.addEventListener(event, callback);
 };
@@ -172,16 +172,16 @@ const saveSettingsData = async (app, installationId) => {
 };
 
 const chartPage = async (type) => {
-  hideComponent('app');
-  showComponent('loader');
-  const settings = await getSettings();
+  components_hideComponent('app');
+  components_showComponent('loader');
+  const settings = await utils_getSettings();
   const chartData = await getChart(type);
   const chart = prepareChart(chartData);
   const marketplaces = prepareMarketplaces(settings.marketplaces);
-  hideComponent('loader');
-  showComponent('app');
+  components_hideComponent('loader');
+  components_showComponent('app');
   renderChart(chart);
-  renderMarketplaces(marketplaces);
+  components_renderMarketplaces(marketplaces);
 };
 
 const settings = async (app) => {
@@ -190,28 +190,28 @@ const settings = async (app) => {
     await app.watch(
       '*',
       async (ctx) => {
-        components_hideComponent('app');
-        components_hideComponent('error');
-        components_showComponent('loader');
+        hideComponent('app');
+        hideComponent('error');
+        showComponent('loader');
         const allMarketplaces = await getMarketplaces(ctx.objectId);
-        const { marketplaces: selectedMarketpaces } = await utils_getSettings(ctx.objectId);
+        const { marketplaces: selectedMarketpaces } = await getSettings(ctx.objectId);
         const preparedMarketplaces = processMarketplaces(allMarketplaces, selectedMarketpaces);
         const marketplaces = prepareMarketplacesWithSwitch(preparedMarketplaces);
-        components_renderMarketplaces(marketplaces);
+        renderMarketplaces(marketplaces);
         enableButton('save', 'Save');
         addEventListener('save', 'click', saveSettingsData.bind(null, app, ctx.objectId));
-        components_showComponent('app');
+        showComponent('app');
       },
       { immediate: true },
     );
   } catch (error) {
     app.emit('snackbar:error', error);
-    components_showComponent('error');
+    showComponent('error');
   }
-  components_hideComponent('loader');
+  hideComponent('loader');
 };
 
-;// CONCATENATED MODULE: ./ui/src/pages/settings.js
+;// CONCATENATED MODULE: ./ui/src/pages/line.js
 /*
 Copyright (c) 2022, CloudBlue LLC
 All rights reserved.
@@ -222,8 +222,8 @@ All rights reserved.
 
 
 
-(0,dist/* default */.ZP)({ 'settings-card': dist/* Card */.Zb })
-  .then(settings);
+(0,dist/* default */.ZP)({ 'main-card': dist/* Card */.Zb })
+  .then(() => { chartPage('line'); });
 
 
 /***/ })
@@ -315,7 +315,7 @@ All rights reserved.
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
-/******/ 			571: 0
+/******/ 			799: 0
 /******/ 		};
 /******/ 		
 /******/ 		// no chunk on demand loading
@@ -365,7 +365,7 @@ All rights reserved.
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(256)))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(385)))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()
