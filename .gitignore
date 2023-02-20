@@ -131,3 +131,4 @@ dmypy.json
 node_modules
 .eaas_e2e_ma_mock_dev.env
 ui/tests/coverage
+.devcontainer
