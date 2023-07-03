@@ -1,7 +1,13 @@
+env: development
 type: multiaccount
 package_id: install.update.command.demo.ff
-name: Install/Update Command Demo
-description: This extension is for demoing the install/update commands of CLI/manage.py.
+name: Install Command Demo
+description: This extension is for demoing the install commands of CLI/manage.py.
 overview: .overview.md
 website: https://demo.cli.com
 icon: .icon.png
+var:
+  DB_URL: 
+    value: postgres://localhost
+  DB_PWD:
+    secure: true
