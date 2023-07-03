@@ -1,8 +1,7 @@
 type: multiaccount
-name: Install/Update Command Demo
 package_id: install.update.command.demo.ff
-short_description: This extension is for demoing the install/update commands of CLI/manage.py.
+name: Install/Update Command Demo
+description: This extension is for demoing the install/update commands of CLI/manage.py.
 overview: .overview.md
-category: CRM
 website: https://demo.cli.com
 icon: .icon.png
