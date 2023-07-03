@@ -1,10 +1,10 @@
 env: development
 type: multiaccount
-package_id: install.update.command.demo.ff
-name: Update Command Demo
-description: This extension is for demoing the update commands of CLI/manage.py.
+package_id: install.update.command.demo.ao
+name: Install/Update Command Demo
+description: This extension is for demoing the install/update commands of CLI/manage.py.
 overview: .overview.md
-website: https://update.demo.cli.com
+website: https://demo.cli.com
 icon: .icon.png
 var:
   DB_URL: 
